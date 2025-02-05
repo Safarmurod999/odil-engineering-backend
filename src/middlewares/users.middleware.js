@@ -1,3 +1,4 @@
+import { jwtHelper } from "../utils/helper.js";
 import { User } from "../models/users.model.js";
 
 export async function checkUser(req, res, next) {
@@ -26,3 +27,27 @@ export async function checkUser(req, res, next) {
     console.log(error.message);
   }
 }
+
+export const checkToken = (req, res, next) => {
+  try {
+    const { authorization } = req.headers;
+    const verifiedToken = jwtHelper.verify(authorization, process.env.SECRET_KEY);
+    console.log(authorization);
+    console.log(verifiedToken);
+    
+    if (typeof verifiedToken === "string") {
+      res.status(401).json({
+        status: 401,
+        data: null,
+        msg: "Invalid credentials",
+      });
+      return;
+    }
+
+    req.user_name = verifiedToken.user_name;
+
+    return next();
+  } catch (error) {
+    console.log(error.message);
+  }
+};

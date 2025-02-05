@@ -2,8 +2,8 @@ import multer from "multer";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    console.log("file", `${process.cwd()}/src/uploads/users`);
-    cb(null, `${process.cwd()}/src/uploads/users`);
+    console.log("file", `${process.cwd()}/src/uploads`);
+    cb(null, `${process.cwd()}/src/uploads`);
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + file.originalname);

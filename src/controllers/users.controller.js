@@ -32,7 +32,6 @@ const POST = async (req, res) => {
               process.cwd(),
               "src",
               "uploads",
-              "users",
               avatar.filename
             )}`,
       is_active: true,

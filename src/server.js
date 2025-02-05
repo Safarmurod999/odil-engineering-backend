@@ -2,11 +2,9 @@ import express from "express";
 import { configDotenv } from "dotenv";
 
 import database from "./utils/config.js";
-// import { userRouter } from "./routes/users.routes.js";
 import { authRouter } from "./routes/auth.routes.js";
-// import { checkToken } from "./middlewares/auth.middleware.js";
-// import { groupsRouter } from "./routes/groups.routes.js";
-// import { channelsRouter } from "./routes/channels.routes.js";
+import { categoriesRouter } from "./routes/categories.routes.js";
+import { checkToken } from "./middlewares/users.middleware.js";
 
 configDotenv();
 
@@ -15,13 +13,11 @@ configDotenv();
   await database();
   app.use(express.json());
   app.use(authRouter);
+  app.use(checkToken, categoriesRouter);
   
-  // app.use(checkToken,userRouter);
-
-  app.all('/*', (req, res) => {
-    res.send('404 not found');
-})
-
+  app.all("/*", (req, res) => {
+    res.send("404 not found");
+  });
 
   const PORT = process.env["SERVER_PORT"] || 3000;
   const HOST = process.env.SERVER_HOST || "localhost";

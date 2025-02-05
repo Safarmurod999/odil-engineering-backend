@@ -4,7 +4,7 @@ export const jwtHelper = {
     return jwt.sign(payload, secretKey, options);
   },
   verify: (token, secretKey) => {
-    try {
+    try {      
       return jwt.verify(token, secretKey);
     } catch (error) {
       return error.message;
