@@ -45,7 +45,17 @@ export async function USER_MODEL({ sequelize }) {
         allowNull: false,
         unique: true,
       },
-      description: {
+      description_uz: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        unique: false,
+      },
+      description_en: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        unique: false,
+      },
+      description_ru: {
         type: DataTypes.TEXT,
         allowNull: false,
         unique: false,

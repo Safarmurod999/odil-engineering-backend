@@ -7,23 +7,30 @@ configDotenv();
 
 const POST = async (req, res) => {
   try {
-    const { name, link, description } = req.body;
+    const {
+      name_uz,
+      name_ru,
+      name_en,
+      link,
+      description_uz,
+      description_ru,
+      description_en,
+    } = req.body;
 
     const image = req.file;
 
     const newProduct = await Category.create({
-      name,
+      name_uz,
+      name_ru,
+      name_en,
       link,
-      description,
+      description_uz,
+      description_ru,
+      description_en,
       image:
         image == ""
           ? ""
-          : `${path.join(
-              process.cwd(),
-              "src",
-              "uploads",
-              image.filename
-            )}`,
+          : `${path.join("src", "uploads", "categories", image.filename)}`,
       is_active: true,
     });
 
@@ -40,7 +47,6 @@ const POST = async (req, res) => {
     });
   }
 };
-
 const GET = async (req, res) => {
   try {
     const data = await Category.findAll();
@@ -56,15 +62,40 @@ const GET = async (req, res) => {
 };
 const UPDATE = async (req, res) => {
   try {
+    const {
+      name_uz,
+      name_ru,
+      name_en,
+      link,
+      description_uz,
+      description_ru,
+      description_en,
+      is_active,
+    } = req.body;
     const image = req.file;
     const categoryData = await Category.findByPk(req.params.id);
+    if (image) {
+      fs.rm(`${path.join(process.cwd(), categoryData.image)}`, (err) => {
+        if (err) {
+          throw err;
+        }
+        console.log("Old file deleted successfully");
+      });
+    }
+    
     const category = await Category.update(
       {
-        name: req.body.name ?? categoryData.name,
-        link: req.body.link ?? categoryData.link,
-        description: req.body.description ?? categoryData.description,
-        image: image ?? categoryData.image,
-        is_active: req.body.is_active ?? categoryData.is_active,
+        name_uz: name_uz ?? categoryData.name_uz,
+        name_ru: name_ru ?? categoryData.name_ru,
+        name_en: name_en ?? categoryData.name_en,
+        link: link ?? categoryData.link,
+        description_uz: description_uz ?? categoryData.description_uz,
+        description_ru: description_ru ?? categoryData.description_ru,
+        description_en: description_en ?? categoryData.description_en,
+        image: image
+          ? `${path.join("src", "uploads", "categories", image.filename)}`
+          : categoryData.image,
+        is_active: is_active ?? categoryData.is_active,
       },
       {
         where: { id: req.params.id },
@@ -86,7 +117,7 @@ const DELETE = async (req, res) => {
     const { id } = req.params;
     const data = await Category.findByPk(id);
 
-    fs.rm(data.image, (err) => {
+    fs.rm(`${path.join(process.cwd(), data.image)}`, (err) => {
       if (err) {
         throw err;
       }

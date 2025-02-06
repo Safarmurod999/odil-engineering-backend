@@ -8,14 +8,18 @@ configDotenv();
 
 const POST = async (req, res) => {
   try {
-    const { user_name, first_name, last_name, email, description, password } =
-      req.body;
+    const {
+      user_name,
+      first_name,
+      last_name,
+      email,
+      description_uz,
+      description_ru,
+      description_en,
+      password,
+    } = req.body;
 
     const avatar = req.file;
-    console.log(avatar);
-    
-    // const encryptedPassword = bcryptHelper.hash(password, salt);
-
     const token = jwtHelper.sign({ user_name }, "Safarmurod");
 
     const newUser = await User.create({
@@ -24,16 +28,13 @@ const POST = async (req, res) => {
       email: email,
       first_name,
       last_name,
-      description,
+      description_uz,
+      description_ru,
+      description_en,
       avatar:
         avatar == ""
           ? ""
-          : `${path.join(
-              process.cwd(),
-              "src",
-              "uploads",
-              avatar.filename
-            )}`,
+          : `${path.join("src", "uploads", "users", avatar.filename)}`,
       is_active: true,
     });
 
@@ -72,18 +73,44 @@ const GET = async (req, res) => {
 };
 const UPDATE = async (req, res) => {
   try {
+    const {
+      user_name,
+      first_name,
+      last_name,
+      email,
+      description_uz,
+      description_ru,
+      description_en,
+      password,
+      is_active,
+    } = req.body;
     const avatar = req.file;
     const userData = await User.findByPk(req.params.id);
+    if (avatar) {
+      console.log(`${path.join(process.cwd(),userData.avatar)}`);      
+      fs.rm(`${path.join(process.cwd(), userData.avatar)}`, (err) => {
+        if (err) {
+          throw err;
+        }
+        console.log("Old file deleted successfully");
+      });
+    }
+    console.log(req.body);
+
     const user = await User.update(
       {
-        user_name: req.body.user_name ?? userData.user_name,
-        password: req.body.password ?? userData.password,
-        email: req.body.email ?? userData.email,
-        first_name: req.body.first_name ?? userData.first_name,
-        last_name: req.body.last_name ?? userData.last_name,
-        description: req.body.description ?? userData.description,
-        avatar: avatar ?? userData.avatar,
-        is_active: req.body.is_active ?? userData.is_active,
+        user_name: user_name ?? userData.user_name,
+        password: password ?? userData.password,
+        email: email ?? userData.email,
+        first_name: first_name ?? userData.first_name,
+        last_name: last_name ?? userData.last_name,
+        description_uz: description_uz ?? userData.description_uz,
+        description_ru: description_ru ?? userData.description_ru,
+        description_en: description_en ?? userData.description_en,
+        avatar: avatar
+          ? `${path.join("src", "uploads", "users", avatar.filename)}`
+          : userData.avatar,
+        is_active: is_active ?? userData.is_active,
       },
       {
         where: { id: req.params.id },
@@ -99,10 +126,8 @@ const DELETE = async (req, res) => {
   try {
     const { id } = req.params;
     const data = await User.findByPk(id);
-    console.log(id);
-    console.log(data);
-    
-    fs.rm(data.avatar, (err) => {
+
+    fs.rm(`${path.join(process.cwd(), data.image)}`, (err) => {
       if (err) {
         throw err;
       }

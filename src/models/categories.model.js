@@ -9,7 +9,7 @@ export async function CATEGORY_MODEL({ sequelize }) {
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
+      name_uz: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
@@ -20,7 +20,49 @@ export async function CATEGORY_MODEL({ sequelize }) {
           },
         },
       },
-      description: {
+      name_ru: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          len: {
+            args: [2, 100],
+            msg: "Category name length should be between 2 and 100",
+          },
+        },
+      },
+      name_en: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          len: {
+            args: [2, 100],
+            msg: "Category name length should be between 2 and 100",
+          },
+        },
+      },
+      description_uz: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+          len: {
+            args: [2, 300],
+            msg: "Category description length should be between 2 and 300",
+          },
+        },
+      },
+      description_ru: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+          len: {
+            args: [2, 300],
+            msg: "Category description length should be between 2 and 300",
+          },
+        },
+      },
+      description_en: {
         type: DataTypes.TEXT,
         allowNull: false,
         validate: {

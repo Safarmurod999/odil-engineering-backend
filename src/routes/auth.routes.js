@@ -10,5 +10,5 @@ authRouter.post("/signup", upload.single("avatar"), CB.POST);
 authRouter.post("/signin", checkUser, CB.SIGNIN);
 
 authRouter.get("/users", CB.GET);
-authRouter.put("/users", upload.single("avatar"), CB.UPDATE);
+authRouter.put("/users/:id", upload.single("avatar"), CB.UPDATE);
 authRouter.delete("/users/:id", CB.DELETE);

@@ -7,23 +7,37 @@ configDotenv();
 
 const POST = async (req, res) => {
   try {
-    const { name, link, description } = req.body;
+    const {
+      name_uz,
+      name_ru,
+      name_en,
+      description_uz,
+      description_ru,
+      description_en,
+      category_id,
+      media,
+    } = req.body;
 
-    const image = req.file;
+    const image = req.files["image"] ? req.files["image"][0] : null;
+
+    const images = req.files["images"] || [];
 
     const newProduct = await Product.create({
-      name,
-      link,
-      description,
-      image:
-        image == ""
-          ? ""
-          : `${path.join(
-              process.cwd(),
-              "src",
-              "uploads",
-              image.filename
-            )}`,
+      name_uz,
+      name_ru,
+      name_en,
+      description_uz,
+      description_ru,
+      description_en,
+      category_id,
+      media,
+      image: image
+        ? `${path.join("src", "uploads", "products", image.filename)}`
+        : "",
+      images: images.map(
+        (img) => `${path.join("src", "uploads", "products", img.filename)}`
+      ),
+
       is_active: true,
     });
 
@@ -40,7 +54,6 @@ const POST = async (req, res) => {
     });
   }
 };
-
 const GET = async (req, res) => {
   try {
     const data = await Product.findAll();
@@ -56,15 +69,67 @@ const GET = async (req, res) => {
 };
 const UPDATE = async (req, res) => {
   try {
-    const image = req.file;
+    const {
+      name_uz,
+      name_ru,
+      name_en,
+      description_uz,
+      description_ru,
+      description_en,
+      category_id,
+      media,
+      is_active,
+    } = req.body;
+
+    const image = req.files["image"] ? req.files["image"][0] : null;
+    let images = req.files["images"] || null;
+
     const productData = await Product.findByPk(req.params.id);
+
+    let mediaData = media;
+    if (!Array.isArray(mediaData)) {
+      mediaData = [mediaData];
+    }
+    if (!Array.isArray(images)) {
+      images = [images];
+    }
+    const imgPaths = images.map(
+      (img) => `${path.join("src", "uploads", "products", img.filename)}`
+    );
+    if (image && productData.image) {
+      fs.rm(`${path.join(process.cwd(), productData.image)}`, (err) => {
+        if (err) {
+          console.log(err);
+          throw err;
+        }
+        console.log("Old file deleted successfully");
+      });
+    }
+    if (images.length && productData.images) {
+      productData.images.forEach((img) => {
+        fs.rm(`${path.join(process.cwd(), img)}`, (err) => {
+          if (err) {
+            throw err;
+          }
+          console.log("Old file deleted successfully");
+        });
+      });
+    }
     const product = await Product.update(
       {
-        name: req.body.name ?? productData.name,
-        link: req.body.link ?? productData.link,
-        description: req.body.description ?? productData.description,
-        image: image ?? productData.image,
-        is_active: req.body.is_active ?? productData.is_active,
+        name_uz: name_uz ?? productData.name_uz,
+        name_ru: name_ru ?? productData.name_ru,
+        name_en: name_en ?? productData.name_en,
+        description_uz: description_uz ?? productData.description_uz,
+        description_ru: description_ru ?? productData.description_ru,
+        description_en: description_en ?? productData.description_en,
+        category_id: category_id ?? productData.category_id,
+        media: mediaData && mediaData.length ? mediaData : productData.media,
+        image: image
+          ? `${path.join("src", "uploads", "products", image.filename)}`
+          : productData.image,
+        images: images && images.length ? imgPaths : productData.images,
+        is_active: is_active ?? productData.is_active,
       },
       {
         where: { id: req.params.id },
@@ -86,12 +151,25 @@ const DELETE = async (req, res) => {
     const { id } = req.params;
     const data = await Product.findByPk(id);
 
-    fs.rm(data.image, (err) => {
-      if (err) {
-        throw err;
-      }
-      console.log("file deleted successfully");
-    });
+    if (data.image) {
+      fs.rm(`${path.join(process.cwd(), data.image)}`, (err) => {
+        if (err) {
+          console.log(err);
+          throw err;
+        }
+        console.log("Old file deleted successfully");
+      });
+    }
+    if (data.images) {
+      data.images.forEach((img) => {
+        fs.rm(`${path.join(process.cwd(), img)}`, (err) => {
+          if (err) {
+            throw err;
+          }
+          console.log("Old file deleted successfully");
+        });
+      });
+    }
 
     const product = await Product.destroy({
       where: {

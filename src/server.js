@@ -5,6 +5,7 @@ import database from "./utils/config.js";
 import { authRouter } from "./routes/auth.routes.js";
 import { categoriesRouter } from "./routes/categories.routes.js";
 import { checkToken } from "./middlewares/users.middleware.js";
+import { productsRouter } from "./routes/products.routes.js";
 
 configDotenv();
 
@@ -12,9 +13,11 @@ configDotenv();
   const app = express();
   await database();
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
   app.use(authRouter);
   app.use(checkToken, categoriesRouter);
-  
+  app.use(checkToken, productsRouter);
+
   app.all("/*", (req, res) => {
     res.send("404 not found");
   });

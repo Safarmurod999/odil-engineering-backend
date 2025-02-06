@@ -7,15 +7,31 @@ export const productsRouter = Router();
 
 productsRouter.post(
   "/products",
-  upload.single("image"),
-  upload.array("images"),
+  upload.fields([
+    {
+      name: "image",
+      maxCount: 1,
+    },
+    {
+      name: "images",
+      maxCount: 8,
+    },
+  ]),
   CB.POST
 );
 productsRouter.get("/products", CB.GET);
 productsRouter.put(
   "/products/:id",
-  upload.single("image"),
-  upload.array("images"),
+  upload.fields([
+    {
+      name: "image",
+      maxCount: 1,
+    },
+    {
+      name: "images",
+      maxCount: 8,
+    },
+  ]),
   CB.UPDATE
 );
 productsRouter.delete("/products/:id", CB.DELETE);
