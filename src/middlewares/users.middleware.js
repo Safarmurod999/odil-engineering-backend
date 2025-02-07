@@ -32,9 +32,7 @@ export const checkToken = (req, res, next) => {
   try {
     const { authorization } = req.headers;
     const verifiedToken = jwtHelper.verify(authorization, process.env.SECRET_KEY);
-    console.log(authorization);
-    console.log(verifiedToken);
-    
+
     if (typeof verifiedToken === "string") {
       res.status(401).json({
         status: 401,

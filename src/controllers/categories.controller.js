@@ -30,7 +30,7 @@ const POST = async (req, res) => {
       image:
         image == ""
           ? ""
-          : `${path.join("src", "uploads", "categories", image.filename)}`,
+          : `${path.join( "uploads", "categories", image.filename)}`,
       is_active: true,
     });
 
@@ -75,7 +75,7 @@ const UPDATE = async (req, res) => {
     const image = req.file;
     const categoryData = await Category.findByPk(req.params.id);
     if (image) {
-      fs.rm(`${path.join(process.cwd(), categoryData.image)}`, (err) => {
+      fs.rm(`${path.join(process.cwd(),"src", categoryData.image)}`, (err) => {
         if (err) {
           throw err;
         }
@@ -93,7 +93,7 @@ const UPDATE = async (req, res) => {
         description_ru: description_ru ?? categoryData.description_ru,
         description_en: description_en ?? categoryData.description_en,
         image: image
-          ? `${path.join("src", "uploads", "categories", image.filename)}`
+          ? `${path.join("uploads", "categories", image.filename)}`
           : categoryData.image,
         is_active: is_active ?? categoryData.is_active,
       },
@@ -117,7 +117,7 @@ const DELETE = async (req, res) => {
     const { id } = req.params;
     const data = await Category.findByPk(id);
 
-    fs.rm(`${path.join(process.cwd(), data.image)}`, (err) => {
+    fs.rm(`${path.join(process.cwd(),"src", data.image)}`, (err) => {
       if (err) {
         throw err;
       }

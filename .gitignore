@@ -37,3 +37,6 @@ Thumbs.db
 
 # Debugger fayllari
 debug.log
+
+# uploads folderi
+uploads/

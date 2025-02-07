@@ -31,11 +31,9 @@ const POST = async (req, res) => {
       description_en,
       category_id,
       media,
-      image: image
-        ? `${path.join("src", "uploads", "products", image.filename)}`
-        : "",
+      image: image ? `${path.join("uploads", "products", image.filename)}` : "",
       images: images.map(
-        (img) => `${path.join("src", "uploads", "products", img.filename)}`
+        (img) => `${path.join("uploads", "products", img.filename)}`
       ),
 
       is_active: true,
@@ -94,10 +92,10 @@ const UPDATE = async (req, res) => {
       images = [images];
     }
     const imgPaths = images.map(
-      (img) => `${path.join("src", "uploads", "products", img.filename)}`
+      (img) => `${path.join("uploads", "products", img.filename)}`
     );
     if (image && productData.image) {
-      fs.rm(`${path.join(process.cwd(), productData.image)}`, (err) => {
+      fs.rm(`${path.join(process.cwd(), "src", productData.image)}`, (err) => {
         if (err) {
           console.log(err);
           throw err;
@@ -107,7 +105,7 @@ const UPDATE = async (req, res) => {
     }
     if (images.length && productData.images) {
       productData.images.forEach((img) => {
-        fs.rm(`${path.join(process.cwd(), img)}`, (err) => {
+        fs.rm(`${path.join(process.cwd(),"src", img)}`, (err) => {
           if (err) {
             throw err;
           }
@@ -126,7 +124,7 @@ const UPDATE = async (req, res) => {
         category_id: category_id ?? productData.category_id,
         media: mediaData && mediaData.length ? mediaData : productData.media,
         image: image
-          ? `${path.join("src", "uploads", "products", image.filename)}`
+          ? `${path.join( "uploads", "products", image.filename)}`
           : productData.image,
         images: images && images.length ? imgPaths : productData.images,
         is_active: is_active ?? productData.is_active,
@@ -152,7 +150,7 @@ const DELETE = async (req, res) => {
     const data = await Product.findByPk(id);
 
     if (data.image) {
-      fs.rm(`${path.join(process.cwd(), data.image)}`, (err) => {
+      fs.rm(`${path.join(process.cwd(),"src", data.image)}`, (err) => {
         if (err) {
           console.log(err);
           throw err;
@@ -162,7 +160,7 @@ const DELETE = async (req, res) => {
     }
     if (data.images) {
       data.images.forEach((img) => {
-        fs.rm(`${path.join(process.cwd(), img)}`, (err) => {
+        fs.rm(`${path.join(process.cwd(),"src", img)}`, (err) => {
           if (err) {
             throw err;
           }

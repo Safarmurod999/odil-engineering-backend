@@ -34,7 +34,7 @@ const POST = async (req, res) => {
       avatar:
         avatar == ""
           ? ""
-          : `${path.join("src", "uploads", "users", avatar.filename)}`,
+          : `${path.join("uploads", "users", avatar.filename)}`,
       is_active: true,
     });
 
@@ -87,15 +87,13 @@ const UPDATE = async (req, res) => {
     const avatar = req.file;
     const userData = await User.findByPk(req.params.id);
     if (avatar) {
-      console.log(`${path.join(process.cwd(),userData.avatar)}`);      
-      fs.rm(`${path.join(process.cwd(), userData.avatar)}`, (err) => {
+      fs.rm(`${path.join(process.cwd(),"src", userData.avatar)}`, (err) => {
         if (err) {
           throw err;
         }
         console.log("Old file deleted successfully");
       });
     }
-    console.log(req.body);
 
     const user = await User.update(
       {
@@ -108,7 +106,7 @@ const UPDATE = async (req, res) => {
         description_ru: description_ru ?? userData.description_ru,
         description_en: description_en ?? userData.description_en,
         avatar: avatar
-          ? `${path.join("src", "uploads", "users", avatar.filename)}`
+          ? `${path.join("uploads", "users", avatar.filename)}`
           : userData.avatar,
         is_active: is_active ?? userData.is_active,
       },
@@ -127,7 +125,7 @@ const DELETE = async (req, res) => {
     const { id } = req.params;
     const data = await User.findByPk(id);
 
-    fs.rm(`${path.join(process.cwd(), data.image)}`, (err) => {
+    fs.rm(`${path.join(process.cwd(),"src", data.image)}`, (err) => {
       if (err) {
         throw err;
       }
