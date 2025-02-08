@@ -31,7 +31,8 @@ export async function checkUser(req, res, next) {
 export const checkToken = (req, res, next) => {
   try {
     const { authorization } = req.headers;
-    const verifiedToken = jwtHelper.verify(authorization, process.env.SECRET_KEY);
+    const token = authorization.split(" ")[1];
+    const verifiedToken = jwtHelper.verify(token, process.env.SECRET_KEY);
 
     if (typeof verifiedToken === "string") {
       res.status(401).json({

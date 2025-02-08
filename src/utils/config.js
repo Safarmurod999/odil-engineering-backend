@@ -1,17 +1,22 @@
 import { Sequelize } from "sequelize";
+import { configDotenv } from "dotenv";
 import { USER_MODEL } from "../models/users.model.js";
 import { CATEGORY_MODEL } from "../models/categories.model.js";
 import { PRODUCT_MODEL } from "../models/products.model.js";
 import { CLIENTS_MODEL } from "../models/clients.model.js";
 import { MEDIA_MODEL } from "../models/media.model.js";
+import { LEADS_MODEL } from "../models/leads.model.js";
+import { TESTIMONIALS_MODEL } from "../models/testimonials.model.js";
+
+configDotenv();
 
 const sequelize = new Sequelize({
   dialect: "postgres",
-  database: "odil_engineering",
-  username: "postgres",
-  password: "123",
-  host: "localhost",
-  port: 5432,
+  database: process.env.DB_NAME,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
   logging: false,
   // dialectOptions: {
   //   ssl: {
@@ -30,6 +35,8 @@ export default async function () {
     PRODUCT_MODEL({ sequelize });
     CLIENTS_MODEL({ sequelize });
     MEDIA_MODEL({ sequelize });
+    LEADS_MODEL({ sequelize });
+    TESTIMONIALS_MODEL({ sequelize });
     console.log("models are loaded!");
 
     //sync models

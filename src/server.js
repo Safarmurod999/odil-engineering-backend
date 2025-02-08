@@ -8,6 +8,8 @@ import { checkToken } from "./middlewares/users.middleware.js";
 import { productsRouter } from "./routes/products.routes.js";
 import { clientsRouter } from "./routes/clients.routes.js";
 import { mediaRouter } from "./routes/media.routes.js";
+import { leadsRouter } from "./routes/leads.routes.js";
+import { testimonialsRouter } from "./routes/testimonials.routes.js";
 
 configDotenv();
 
@@ -22,6 +24,8 @@ configDotenv();
   app.use(checkToken, categoriesRouter);
   app.use(checkToken, productsRouter);
   app.use(checkToken, mediaRouter);
+  app.use(checkToken, leadsRouter);
+  app.use(checkToken, testimonialsRouter);
 
   app.all("/*", (req, res) => {
     res.send("404 not found");
