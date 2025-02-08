@@ -19,7 +19,8 @@ productsRouter.post(
   ]),
   CB.POST
 );
-productsRouter.get("/products", CB.GET);
+productsRouter.get("/products", CB.GET_ALL);
+productsRouter.get("/products/:id", CB.GET);
 productsRouter.put(
   "/products/:id",
   upload.fields([

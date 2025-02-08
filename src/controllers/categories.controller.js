@@ -19,7 +19,7 @@ const POST = async (req, res) => {
 
     const image = req.file;
 
-    const newProduct = await Category.create({
+    const newCategory = await Category.create({
       name_uz,
       name_ru,
       name_en,
@@ -30,34 +30,57 @@ const POST = async (req, res) => {
       image:
         image == ""
           ? ""
-          : `${path.join( "uploads", "categories", image.filename)}`,
+          : `${path.join("uploads", "categories", image.filename)}`,
       is_active: true,
     });
 
     res.status(201).json({
       status: 201,
-      data: newProduct,
+      data: newCategory,
       msg: "Category created successfully",
-      err: null,
     });
   } catch (error) {
     res.status(500).json({
       status: 500,
-      message: error.message,
+      message: "Error while while fetching category",
+      error: error.message,
     });
   }
 };
-const GET = async (req, res) => {
+const GET_ALL = async (req, res) => {
   try {
     const data = await Category.findAll();
     res.status(200).json({
       status: 200,
       data,
-      msg: null,
-      err: null,
+      message: "Category fetched successfully",
     });
   } catch (error) {
-    res.send(error.message);
+    res.status(500).json({
+      status: 500,
+      message: "Error while while fetching category",
+      error: error.message,
+    });
+  }
+};
+const GET = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await Category.findByPk(id);
+    if (!data) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    res.status(200).json({
+      status: 200,
+      data,
+      message: "Category fetched successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: "Error while while fetching category",
+      error: error.message,
+    });
   }
 };
 const UPDATE = async (req, res) => {
@@ -74,15 +97,18 @@ const UPDATE = async (req, res) => {
     } = req.body;
     const image = req.file;
     const categoryData = await Category.findByPk(req.params.id);
+    if (!categoryData) {
+      return res.status(404).json({ message: "Category not found" });
+    }
     if (image) {
-      fs.rm(`${path.join(process.cwd(),"src", categoryData.image)}`, (err) => {
+      fs.rm(`${path.join(process.cwd(), "src", categoryData.image)}`, (err) => {
         if (err) {
           throw err;
         }
         console.log("Old file deleted successfully");
       });
     }
-    
+
     const category = await Category.update(
       {
         name_uz: name_uz ?? categoryData.name_uz,
@@ -106,18 +132,23 @@ const UPDATE = async (req, res) => {
       status: 200,
       data: category,
       msg: "Category updated successfully!",
-      err: null,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      status: 500,
+      message: "Error while while fetching category",
+      error: error.message,
+    });
   }
 };
 const DELETE = async (req, res) => {
   try {
     const { id } = req.params;
     const data = await Category.findByPk(id);
-
-    fs.rm(`${path.join(process.cwd(),"src", data.image)}`, (err) => {
+    if (!data) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    fs.rm(`${path.join(process.cwd(), "src", data.image)}`, (err) => {
       if (err) {
         throw err;
       }
@@ -130,14 +161,23 @@ const DELETE = async (req, res) => {
       },
     });
 
-    res.status(200).json({ status: 200, data: category, err: null });
+    res.status(200).json({
+      status: 200,
+      data: category,
+      message: "Category successfully deleted",
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      status: 500,
+      message: "Error while while fetching category",
+      error: error.message,
+    });
   }
 };
 
 export default {
   POST,
+  GET_ALL,
   GET,
   UPDATE,
   DELETE,

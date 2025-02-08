@@ -18,9 +18,25 @@ const POST = async (req, res) => {
       description_en,
       password,
     } = req.body;
+    const user = await User.findOne({ where: { user_name } });
 
+    if (user) {
+      return res.status(400).json({ message: "User already signed up" });
+    }
+    if (
+      !user_name ||
+      !first_name ||
+      !last_name ||
+      !email ||
+      !password ||
+      !description_uz ||
+      !description_ru ||
+      !description_en
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
     const avatar = req.file;
-    const token = jwtHelper.sign({ user_name }, "Safarmurod");
+    const token = jwtHelper.sign({ user_name }, process.env.SECRET_KEY);
 
     const newUser = await User.create({
       user_name,
@@ -32,22 +48,20 @@ const POST = async (req, res) => {
       description_ru,
       description_en,
       avatar:
-        avatar == ""
-          ? ""
-          : `${path.join("uploads", "users", avatar.filename)}`,
+        avatar == "" ? "" : `${path.join("uploads", "users", avatar.filename)}`,
       is_active: true,
     });
 
     res.status(201).json({
       status: 201,
       data: token,
-      msg: "Successfully signed up.",
-      err: null,
+      message: "Successfully signed up.",
     });
   } catch (error) {
     res.status(500).json({
       status: 500,
-      message: error.message,
+      message: "Error while creating user",
+      error: error.message,
     });
   }
 };
@@ -57,18 +71,44 @@ const SIGNIN = async (req, res) => {
 
     const token = jwtHelper.sign({ user_name }, process.env.SECRET_KEY);
 
-    return res.json({ status: 200, data: token, error: null });
+    return res.json({
+      status: 200,
+      data: token,
+      message: "Successfully signed in",
+    });
   } catch (error) {
     console.log(error.message);
   }
 };
+const GET_ALL = async (req, res) => {
+  try {
+    res.status(200).json({
+      status: 200,
+      data: await User.findAll(),
+      message: "Users successfully fetched",
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: "Error while fetching user",
+      error: error.message,
+    });
+  }
+};
 const GET = async (req, res) => {
   try {
-    res
-      .status(200)
-      .json({ status: 200, data: await User.findAll(), err: null });
+    const { id } = req.params;
+    const userData = await User.findByPk(id);
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ status: 200, data: userData, message: null });
   } catch (error) {
-    res.send(error.message);
+    res.status(500).json({
+      status: 500,
+      message: "Error while fetching user by id",
+      error: error.message,
+    });
   }
 };
 const UPDATE = async (req, res) => {
@@ -86,8 +126,11 @@ const UPDATE = async (req, res) => {
     } = req.body;
     const avatar = req.file;
     const userData = await User.findByPk(req.params.id);
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
     if (avatar) {
-      fs.rm(`${path.join(process.cwd(),"src", userData.avatar)}`, (err) => {
+      fs.rm(`${path.join(process.cwd(), "src", userData.avatar)}`, (err) => {
         if (err) {
           throw err;
         }
@@ -115,17 +158,23 @@ const UPDATE = async (req, res) => {
       }
     );
 
-    res.status(200).json({ status: 200, data: user, err: null });
+    res.status(200).json({ status: 200, data: user, message: null });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      status: 500,
+      message: "Error while updating user",
+      error: error.message,
+    });
   }
 };
 const DELETE = async (req, res) => {
   try {
     const { id } = req.params;
     const data = await User.findByPk(id);
-
-    fs.rm(`${path.join(process.cwd(),"src", data.image)}`, (err) => {
+    if (!data) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    fs.rm(`${path.join(process.cwd(), "src", data.image)}`, (err) => {
       if (err) {
         throw err;
       }
@@ -138,14 +187,21 @@ const DELETE = async (req, res) => {
       },
     });
 
-    res.status(200).json({ status: 200, data: user, err: null });
+    res
+      .status(200)
+      .json({ status: 200, data: user, message: "Successfully deleted" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      status: 500,
+      message: "Error while deleting user",
+      error: error.message,
+    });
   }
 };
 
 export default {
   POST,
+  GET_ALL,
   GET,
   UPDATE,
   DELETE,

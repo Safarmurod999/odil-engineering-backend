@@ -1,8 +1,8 @@
 import { Model, DataTypes } from "sequelize";
 
-export class Media extends Model {}
-export async function MEDIA_MODEL({ sequelize }) {
-  Media.init(
+export class Project extends Model {}
+export async function PROJECTS_MODEL({ sequelize }) {
+  Project.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -27,7 +27,7 @@ export async function MEDIA_MODEL({ sequelize }) {
         validate: {
           len: {
             args: [2, 100],
-            msg: "Media name length should be between 2 and 100",
+            msg: "Project name length should be between 2 and 100",
           },
         },
       },
@@ -38,17 +38,42 @@ export async function MEDIA_MODEL({ sequelize }) {
         validate: {
           len: {
             args: [2, 100],
-            msg: "Media name length should be between 2 and 100",
+            msg: "Project name length should be between 2 and 100",
+          },
+        },
+      },
+      description_uz: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+          len: {
+            args: [2, 300],
+            msg: "Project description length should be between 2 and 300",
+          },
+        },
+      },
+      description_ru: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+          len: {
+            args: [2, 300],
+            msg: "Project description length should be between 2 and 300",
+          },
+        },
+      },
+      description_en: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+          len: {
+            args: [2, 300],
+            msg: "Project description length should be between 2 and 300",
           },
         },
       },
       link: {
         type: DataTypes.STRING,
-        allowNull: true,
-        unique: false,
-      },
-      product_id: {
-        type: DataTypes.INTEGER,
         allowNull: true,
         unique: false,
       },
@@ -59,8 +84,8 @@ export async function MEDIA_MODEL({ sequelize }) {
       },
     },
     {
-      tableName: "media",
-      modelName: "media",
+      tableName: "project",
+      modelName: "project",
       updatedAt: "updated_at",
       createdAt: "created_at",
       deletedAt: "deleted_at",

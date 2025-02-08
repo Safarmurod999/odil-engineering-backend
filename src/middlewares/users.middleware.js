@@ -1,7 +1,7 @@
 import { jwtHelper } from "../utils/helper.js";
 import { User } from "../models/users.model.js";
 
-export async function checkUser(req, res, next) {
+export const checkUser = async (req, res, next) => {
   try {
     const { user_name, password } = req.body;
 
@@ -16,9 +16,9 @@ export async function checkUser(req, res, next) {
       return;
     }
 
-    const passwwordCompare = user.password === password;
+    const passwordCompare = user.password === password;
 
-    if (!passwwordCompare) {
+    if (!passwordCompare) {
       res.json({ status: 401, error: "Invalid Credentials" });
       return;
     }
@@ -26,7 +26,7 @@ export async function checkUser(req, res, next) {
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
 export const checkToken = (req, res, next) => {
   try {

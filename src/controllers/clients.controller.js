@@ -7,13 +7,11 @@ configDotenv();
 
 const POST = async (req, res) => {
   try {
-    const {
-      name,
-    } = req.body;
+    const { name } = req.body;
 
     const image = req.file;
 
-    const newProduct = await Client.create({
+    const newClient = await Client.create({
       name,
       image:
         image == ""
@@ -24,14 +22,14 @@ const POST = async (req, res) => {
 
     res.status(201).json({
       status: 201,
-      data: newProduct,
+      data: newClient,
       msg: "Client created successfully",
-      err: null,
     });
   } catch (error) {
     res.status(500).json({
       status: 500,
-      message: error.message,
+      message: "Error while while creating client",
+      error: error.message,
     });
   }
 };
@@ -41,19 +39,19 @@ const GET = async (req, res) => {
     res.status(200).json({
       status: 200,
       data,
-      msg: null,
-      err: null,
+      message: "Clients fetched successfully",
     });
   } catch (error) {
-    res.send(error.message);
+    res.status(500).json({
+      status: 500,
+      message: "Error while while fetching clients",
+      error: error.message,
+    });
   }
 };
 const UPDATE = async (req, res) => {
   try {
-    const {
-      name,
-      is_active,
-    } = req.body;
+    const { name, is_active } = req.body;
     const image = req.file;
     const clientData = await Client.findByPk(req.params.id);
     if (image) {
@@ -64,7 +62,7 @@ const UPDATE = async (req, res) => {
         console.log("Old file deleted successfully");
       });
     }
-    
+
     const client = await Client.update(
       {
         name: name ?? clientData.name,
@@ -82,10 +80,13 @@ const UPDATE = async (req, res) => {
       status: 200,
       data: client,
       msg: "Client updated successfully!",
-      err: null,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      status: 500,
+      message: "Error while while updating client",
+      error: error.message,
+    });
   }
 };
 const DELETE = async (req, res) => {
@@ -106,9 +107,17 @@ const DELETE = async (req, res) => {
       },
     });
 
-    res.status(200).json({ status: 200, data: client, err: null });
+    res.status(200).json({
+      status: 200,
+      data: client,
+      message: "Client successfully deleted",
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      status: 500,
+      message: "Error while while deleting client",
+      error: error.message,
+    });
   }
 };
 

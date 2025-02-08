@@ -21,7 +21,18 @@ const POST = async (req, res) => {
     const image = req.files["image"] ? req.files["image"][0] : null;
 
     const images = req.files["images"] || [];
-
+    if (
+      !name_uz ||
+      !name_ru ||
+      !name_en ||
+      !description_uz ||
+      !description_ru ||
+      !description_en ||
+      !category_id ||
+      !media
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
     const newProduct = await Product.create({
       name_uz,
       name_ru,
@@ -42,27 +53,50 @@ const POST = async (req, res) => {
     res.status(201).json({
       status: 201,
       data: newProduct,
-      msg: "Product created successfully",
-      err: null,
+      message: "Product created successfully",
     });
   } catch (error) {
     res.status(500).json({
       status: 500,
-      message: error.message,
+      message: "Error while creating product",
+      error: error.message,
     });
   }
 };
-const GET = async (req, res) => {
+const GET_ALL = async (req, res) => {
   try {
     const data = await Product.findAll();
     res.status(200).json({
       status: 200,
       data,
-      msg: null,
-      err: null,
+      message: "Data successfully fetched",
     });
   } catch (error) {
-    res.send(error.message);
+    res.status(500).json({
+      status: 500,
+      message: "Error while fetching products",
+      error: error.message,
+    });
+  }
+};
+const GET = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await Product.findByPk(id);
+    if (!data) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.status(200).json({
+      status: 200,
+      data,
+      message: "Data successfully fetched",
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: "Error while fetching product by id",
+      error: error.message,
+    });
   }
 };
 const UPDATE = async (req, res) => {
@@ -83,7 +117,9 @@ const UPDATE = async (req, res) => {
     let images = req.files["images"] || null;
 
     const productData = await Product.findByPk(req.params.id);
-
+    if (!productData) {
+      return res.status(404).json({ message: "Product not found" });
+    }
     let mediaData = media;
     if (!Array.isArray(mediaData)) {
       mediaData = [mediaData];
@@ -105,7 +141,7 @@ const UPDATE = async (req, res) => {
     }
     if (images.length && productData.images) {
       productData.images.forEach((img) => {
-        fs.rm(`${path.join(process.cwd(),"src", img)}`, (err) => {
+        fs.rm(`${path.join(process.cwd(), "src", img)}`, (err) => {
           if (err) {
             throw err;
           }
@@ -124,7 +160,7 @@ const UPDATE = async (req, res) => {
         category_id: category_id ?? productData.category_id,
         media: mediaData && mediaData.length ? mediaData : productData.media,
         image: image
-          ? `${path.join( "uploads", "products", image.filename)}`
+          ? `${path.join("uploads", "products", image.filename)}`
           : productData.image,
         images: images && images.length ? imgPaths : productData.images,
         is_active: is_active ?? productData.is_active,
@@ -137,7 +173,7 @@ const UPDATE = async (req, res) => {
     res.status(200).json({
       status: 200,
       data: product,
-      msg: "Product updated successfully!",
+      message: "Product updated successfully!",
       err: null,
     });
   } catch (error) {
@@ -148,9 +184,11 @@ const DELETE = async (req, res) => {
   try {
     const { id } = req.params;
     const data = await Product.findByPk(id);
-
+    if (!data) {
+      return res.status(404).json({ message: "Product not found" });
+    }
     if (data.image) {
-      fs.rm(`${path.join(process.cwd(),"src", data.image)}`, (err) => {
+      fs.rm(`${path.join(process.cwd(), "src", data.image)}`, (err) => {
         if (err) {
           console.log(err);
           throw err;
@@ -160,7 +198,7 @@ const DELETE = async (req, res) => {
     }
     if (data.images) {
       data.images.forEach((img) => {
-        fs.rm(`${path.join(process.cwd(),"src", img)}`, (err) => {
+        fs.rm(`${path.join(process.cwd(), "src", img)}`, (err) => {
           if (err) {
             throw err;
           }
@@ -175,7 +213,11 @@ const DELETE = async (req, res) => {
       },
     });
 
-    res.status(200).json({ status: 200, data: product, err: null });
+    res.status(200).json({
+      status: 200,
+      data: product,
+      message: "Product successfully deleted",
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -183,6 +225,7 @@ const DELETE = async (req, res) => {
 
 export default {
   POST,
+  GET_ALL,
   GET,
   UPDATE,
   DELETE,

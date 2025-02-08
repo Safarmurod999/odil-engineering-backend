@@ -1,130 +1,54 @@
-import { Op } from "sequelize";
 import { Lead } from "../models/leads.model.js";
 
-// Create a new lead
 const POST = async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      phone,
-      message_uz,
-      message_en,
-      message_ru,
-      is_active,
-    } = req.body;
+    const { name, email, phone, message, is_active } = req.body;
 
-    if (
-      !name ||
-      !email ||
-      !phone ||
-      !message_uz ||
-      !message_en ||
-      !message_ru
-    ) {
+    if (!name || !email || !phone || !message) {
       return res.status(400).json({ message: "All fields are required" });
-    }
-
-    // Check if the lead already exists
-    const existingLead = await Lead.findOne({
-      where: {
-        [Op.or]: [{ email }, { phone }],
-      },
-    });
-
-    if (existingLead) {
-      return res.status(409).json({
-        message: "Lead with this email or phone already exists",
-      });
     }
 
     const newLead = await Lead.create({
       name,
       email,
       phone,
-      message_uz,
-      message_en,
-      message_ru,
+      message,
       is_active: !!is_active,
     });
 
-    return res
-      .status(201)
-      .json({ message: "Lead created successfully", lead: newLead });
+    res.status(201).json({
+      status: 201,
+      data: newLead,
+      message: "Lead created successfully",
+    });
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "Error creating lead", error: error.message });
+      .json({
+        status: 500,
+        message: "Error while creating lead",
+        error: error.message,
+      });
   }
 };
 
-// Get all leads
 const GET_ALL = async (req, res) => {
   try {
     const leads = await Lead.findAll();
-    return res.status(200).json(leads);
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Error fetching leads", error: error.message });
-  }
-};
-
-// Get a single lead by ID
-const GET = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const lead = await Lead.findByPk(id);
-
-    if (!lead) {
-      return res.status(404).json({ message: "Lead not found" });
-    }
-
-    return res.status(200).json(lead);
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Error fetching lead", error: error.message });
-  }
-};
-
-// Update a lead
-const UPDATE = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      name,
-      email,
-      phone,
-      message_uz,
-      message_en,
-      message_ru,
-      is_active,
-    } = req.body;
-
-    const lead = await Lead.findByPk(id);
-    if (!lead) {
-      return res.status(404).json({ message: "Lead not found" });
-    }
-
-    await lead.update({
-      name,
-      email,
-      phone,
-      message_uz,
-      message_en,
-      message_ru,
-      is_active,
+    res.status(200).json({
+      status: 200,
+      data: leads,
+      message: "Leads fetched successfully",
     });
-    return res.status(200).json({ message: "Lead updated successfully", lead });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Error updating lead", error: error.message });
+    res.status(500).json({
+      status: 500,
+      message: "Error while while fetching leads",
+      error: error.message,
+    });
   }
 };
 
-// Delete a lead
 const DELETE = async (req, res) => {
   try {
     const { id } = req.params;
@@ -133,13 +57,19 @@ const DELETE = async (req, res) => {
       return res.status(404).json({ message: "Lead not found" });
     }
 
-    await lead.destroy();
-    return res.status(200).json({ message: "Lead deleted successfully" });
+    const data = await lead.destroy();
+    res.status(201).json({
+      status: 201,
+      data,
+      message: "Lead created successfully",
+    });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Error deleting lead", error: error.message });
+    res.status(500).json({
+      status: 500,
+      message: "Error while while deleting lead",
+      error: error.message,
+    });
   }
 };
 
-export default { POST, GET_ALL, GET, UPDATE, DELETE };
+export default { POST, GET_ALL, DELETE };

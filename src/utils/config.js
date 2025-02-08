@@ -7,6 +7,7 @@ import { CLIENTS_MODEL } from "../models/clients.model.js";
 import { MEDIA_MODEL } from "../models/media.model.js";
 import { LEADS_MODEL } from "../models/leads.model.js";
 import { TESTIMONIALS_MODEL } from "../models/testimonials.model.js";
+import { PROJECTS_MODEL } from "../models/projects.model.js";
 
 configDotenv();
 
@@ -35,6 +36,7 @@ export default async function () {
     PRODUCT_MODEL({ sequelize });
     CLIENTS_MODEL({ sequelize });
     MEDIA_MODEL({ sequelize });
+    PROJECTS_MODEL({ sequelize });
     LEADS_MODEL({ sequelize });
     TESTIMONIALS_MODEL({ sequelize });
     console.log("models are loaded!");

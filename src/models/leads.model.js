@@ -12,7 +12,7 @@ export async function LEADS_MODEL({ sequelize }) {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: false,
         validate: {
           len: {
             args: [2, 100],
@@ -23,7 +23,7 @@ export async function LEADS_MODEL({ sequelize }) {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: false,
         validate: {
           len: {
             args: [2, 100],
@@ -34,7 +34,7 @@ export async function LEADS_MODEL({ sequelize }) {
       phone: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: false,
         validate: {
           len: {
             args: [2, 100],
@@ -42,29 +42,7 @@ export async function LEADS_MODEL({ sequelize }) {
           },
         },
       },
-      message_uz: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: false,
-        validate: {
-          len: {
-            args: [2, 100],
-            msg: "Lead message length should be between 2 and 100",
-          },
-        },
-      },
-      message_en: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: false,
-        validate: {
-          len: {
-            args: [2, 100],
-            msg: "Lead message length should be between 2 and 100",
-          },
-        },
-      },
-      message_ru: {
+      message: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: false,

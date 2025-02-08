@@ -9,10 +9,10 @@ export async function TESTIMONIALS_MODEL({ sequelize }) {
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
+      name_uz: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: false,
         validate: {
           len: {
             args: [2, 100],
@@ -20,14 +20,25 @@ export async function TESTIMONIALS_MODEL({ sequelize }) {
           },
         },
       },
-      job: {
+      name_ru: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: false,
         validate: {
           len: {
             args: [2, 100],
-            msg: "Testimonial job length should be between 2 and 100",
+            msg: "Testimonial name length should be between 2 and 100",
+          },
+        },
+      },
+      name_en: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: false,
+        validate: {
+          len: {
+            args: [2, 100],
+            msg: "Testimonial name length should be between 2 and 100",
           },
         },
       },

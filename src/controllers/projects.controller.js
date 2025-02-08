@@ -1,50 +1,68 @@
 import { configDotenv } from "dotenv";
-import { Media } from "../models/media.model.js";
+import { Project } from "../models/projects.model.js";
 
 configDotenv();
 
 const POST = async (req, res) => {
   try {
-    const { title_uz, title_ru, title_en, link, product_id } = req.body;
-    if (!title_uz || !title_ru || !title_en || !link || !product_id) {
-      res.status(400).json({
-        message: "All fields are required!",
-      });
-    }
-    const newMedia = await Media.create({
+    const {
       title_uz,
       title_ru,
       title_en,
       link,
-      product_id,
+      description_uz,
+      description_ru,
+      description_en,
+    } = req.body;
+    if (
+      !title_uz ||
+      !title_ru ||
+      !title_en ||
+      !link ||
+      !description_uz ||
+      !description_ru ||
+      !description_en
+    ) {
+      res.status(400).json({
+        message: "All fields are required!",
+      });
+    }
+    const newProject = await Project.create({
+      title_uz,
+      title_ru,
+      title_en,
+      link,
+      description_uz,
+      description_ru,
+      description_en,
       is_active: true,
     });
 
     res.status(201).json({
       status: 201,
-      data: newMedia,
-      message: "Media created successfully",
+      data: newProject,
+      message: "Project created successfully",
     });
   } catch (error) {
     res.status(500).json({
       status: 500,
-      message: "Error while creating media",
+      message: "Error while creating project",
       error: error.message,
     });
   }
 };
 const GET_ALL = async (req, res) => {
   try {
-    const data = await Media.findAll();
+    const data = await Project.findAll();
     res.status(200).json({
       status: 200,
       data,
-      message: "Medias successfully fetched",
+      message: "Projects fetched successfully",
     });
   } catch (error) {
     res.status(500).json({
       status: 500,
-      message: "Error while fetching medias",
+      message: "Error while fetching project",
       error: error.message,
     });
   }
@@ -52,42 +70,42 @@ const GET_ALL = async (req, res) => {
 const GET = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await Media.findByPk(id);
+    const data = await Project.findByPk(id);
     if (!data) {
       res.status(404).json({
-        message: "Media not found!",
+        message: "Project not found!",
       });
     }
     res.status(200).json({
       status: 200,
       data,
-      message: "Media successfully fetched",
+      message: null,
     });
   } catch (error) {
     res.status(500).json({
       status: 500,
-      message: "Error while fetching media by id",
+      message: "Error while fetching project",
       error: error.message,
     });
   }
 };
 const UPDATE = async (req, res) => {
   try {
-    const { title_uz, title_ru, title_en, link, product_id, is_active } =
+    const { title_uz, title_ru, title_en, link, description_uz, is_active } =
       req.body;
-    const data = await Media.findByPk(req.params.id);
+    const data = await Project.findByPk(req.params.id);
     if (!data) {
       res.status(404).json({
-        message: "Media not found!",
+        message: "Project not found!",
       });
     }
-    const media = await Media.update(
+    const project = await Project.update(
       {
         title_uz: title_uz ?? data.title_uz,
         title_ru: title_ru ?? data.title_ru,
         title_en: title_en ?? data.title_en,
         link: link ?? data.link,
-        product_id: product_id ?? data.product_id,
+        description_uz: description_uz ?? data.description_uz,
         is_active: is_active ?? data.is_active,
       },
       {
@@ -97,13 +115,13 @@ const UPDATE = async (req, res) => {
 
     res.status(200).json({
       status: 200,
-      data: media,
-      message: "Media updated successfully!",
+      data: project,
+      message: "Project updated successfully!",
     });
   } catch (error) {
     res.status(500).json({
       status: 500,
-      message: "Error while updating media",
+      message: "Error while updating project",
       error: error.message,
     });
   }
@@ -111,23 +129,29 @@ const UPDATE = async (req, res) => {
 const DELETE = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await Media.findByPk(id);
-    if (!data) {
+    const projectData = await Project.findByPk(id);
+    if (!projectData) {
       res.status(404).json({
-        message: "Media not found!",
+        message: "Project not found!",
       });
     }
-    const media = await Media.destroy({
+    const data = await Project.destroy({
       where: {
         id: id,
       },
     });
 
-    res.status(200).json({ status: 200, data: media, message: "Media successfully deleted" });
+    res
+      .status(200)
+      .json({
+        status: 200,
+        data: data,
+        message: "Project deleted successfully",
+      });
   } catch (error) {
     res.status(500).json({
       status: 500,
-      message: "Error while deleting media",
+      message: "Error while deleting project",
       error: error.message,
     });
   }
