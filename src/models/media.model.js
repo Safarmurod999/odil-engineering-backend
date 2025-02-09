@@ -51,6 +51,11 @@ export async function MEDIA_MODEL({ sequelize }) {
         type: DataTypes.INTEGER,
         allowNull: true,
         unique: false,
+        references: {
+          model: "products",
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
       is_active: {
         type: DataTypes.BOOLEAN,

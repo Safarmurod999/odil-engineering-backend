@@ -77,17 +77,14 @@ export async function PRODUCT_MODEL({ sequelize }) {
         allowNull: false,
         unique: false,
       },
-      images: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: false,
-      },
       category_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-      },
-      media:{
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: true,
+        references: {
+          model: "categories",
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
       is_active: {
         type: DataTypes.BOOLEAN,
