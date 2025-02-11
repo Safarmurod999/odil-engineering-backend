@@ -31,7 +31,7 @@ export const checkUser = async (req, res, next) => {
 export const checkToken = (req, res, next) => {
   try {
     const { authorization } = req.headers;
-    const token = authorization.split(" ")[1];
+    const token = authorization ? authorization.split(" ")[1] : "";
     const verifiedToken = jwtHelper.verify(token, process.env.SECRET_KEY);
 
     if (typeof verifiedToken === "string") {
