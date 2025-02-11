@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { configDotenv } from "dotenv";
 
 import database from "./utils/config.js";
@@ -16,6 +17,13 @@ configDotenv();
 !(async function () {
   const app = express();
   await database();
+  let corsOptions = {
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  };
+  app.use(cors(corsOptions));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use("/uploads", express.static("src/uploads"));
