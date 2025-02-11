@@ -1,10 +1,13 @@
 import multer from "multer";
-import {existsSync, mkdirSync} from "fs";
+import { existsSync, mkdirSync } from "fs";
 import path from "path";
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    let folderPath =
-      req.url.split("/")[1] == "signup" ? "users" : req.url.split("/")[1];
+    let folderPath = req.url
+      ? req.url.split("/")[1] == "signup"
+        ? "users"
+        : req.url.split("/")[1]
+      : "";
     const uploadPath = path.join(process.cwd(), "src/uploads", folderPath);
     if (!existsSync(uploadPath)) {
       mkdirSync(uploadPath, { recursive: true });
