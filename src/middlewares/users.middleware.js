@@ -24,7 +24,11 @@ export const checkUser = async (req, res, next) => {
     }
     return next();
   } catch (error) {
-    console.log(error.message);
+    res.status(500).json({
+      status: 500,
+      message: "Error while checking user credentials",
+      error: error.message,
+    });
   }
 };
 
@@ -32,8 +36,8 @@ export const checkToken = (req, res, next) => {
   try {
     const { authorization } = req.headers;
     const token = authorization;
-    console.log(token);
-    
+    // console.log(token);
+
     const verifiedToken = jwtHelper.verify(token, process.env.SECRET_KEY);
 
     if (typeof verifiedToken === "string") {
@@ -49,6 +53,10 @@ export const checkToken = (req, res, next) => {
 
     return next();
   } catch (error) {
-    console.log(error.message);
+    res.status(500).json({
+      status: 500,
+      message: "Error while checking user token",
+      error: error.message,
+    });
   }
 };

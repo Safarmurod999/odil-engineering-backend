@@ -77,7 +77,11 @@ const SIGNIN = async (req, res) => {
       message: "Successfully signed in",
     });
   } catch (error) {
-    console.log(error.message);
+    res.status(500).json({
+      status: 500,
+      message: "Error while fetching user",
+      error: error.message,
+    });
   }
 };
 const GET_ALL = async (req, res) => {

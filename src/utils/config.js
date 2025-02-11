@@ -52,7 +52,11 @@ export default async function () {
 
     return sequelize;
   } catch (error) {
-    console.log(error);
+    res.status(500).json({
+      status: 500,
+      message: "Error while connecting to db",
+      error: error.message,
+    });
     console.log("db did not connect!");
   }
 }
