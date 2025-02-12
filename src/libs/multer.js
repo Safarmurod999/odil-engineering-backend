@@ -4,9 +4,9 @@ import path from "path";
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     let folderPath = req.url
-      ? req.url.split("/")[1] == "signup"
+      ? req?.url?.split("/")[1] == "signup"
         ? "users"
-        : req.url.split("/")[1]
+        : req?.url?.split("/")[1]
       : "";
     const uploadPath = path.join(process.cwd(), "src/uploads", folderPath);
     if (!existsSync(uploadPath)) {
