@@ -28,24 +28,12 @@ configDotenv();
   app.use(express.urlencoded({ extended: true }));
   app.use("/uploads", express.static("src/uploads"));
   app.use(usersRouter);
-  app.use(
-    // checkToken,
-     clientsRouter);
-  app.use(
-    // checkToken,
-     categoriesRouter);
-  app.use(
-    // checkToken,
-     productsRouter);
-  app.use(
-    // checkToken,
-     mediaRouter);
-  app.use(
-    // checkToken,
-     leadsRouter);
-  app.use(
-    // checkToken,
-     testimonialsRouter);
+  app.use(checkToken, clientsRouter);
+  app.use(checkToken, categoriesRouter);
+  app.use(checkToken, productsRouter);
+  app.use(checkToken, mediaRouter);
+  app.use(checkToken, leadsRouter);
+  app.use(checkToken, testimonialsRouter);
 
   app.all("/*", (req, res) => {
     res.send("404 not found");
