@@ -23,6 +23,7 @@ configDotenv();
     preflightContinue: false,
     optionsSuccessStatus: 204,
   };
+  app.enable("trust proxy");
   app.use(cors(corsOptions));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
