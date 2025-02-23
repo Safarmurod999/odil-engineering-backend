@@ -1,8 +1,8 @@
 import { User } from "../models/users.model.js";
-import path from "node:path";
-import fs from "node:fs";
+import fs from "fs";
 import { configDotenv } from "dotenv";
 import { jwtHelper } from "../utils/helper.js";
+import path from "path";
 
 configDotenv();
 
@@ -173,13 +173,21 @@ const UPDATE = async (req, res) => {
 };
 const DELETE = async (req, res) => {
   try {
+    console.log(req.params);
+    
     const { id } = req.params;
-    const data = await User.findByPk(id);
+    const data = await User.findByPk(id);    
     if (!data) {
       return res.status(404).json({ message: "User not found" });
     }
-    fs.rm(`${path.join(process.cwd(), "src", data.image)}`, (err) => {
+    console.log(process.cwd());
+    
+    console.log(`${path.join( "src", data.avatar)}`);
+    
+    fs.rm(`${path.join(process.cwd(), "src", data.avatar)}`, (err) => {
       if (err) {
+        console.log("error", err);
+        
         throw err;
       }
       console.log("file deleted successfully");
