@@ -3,6 +3,7 @@ import fs from "fs";
 import { configDotenv } from "dotenv";
 import { jwtHelper } from "../utils/helper.js";
 import path from "path";
+import { Op } from "sequelize";
 
 configDotenv();
 
@@ -86,9 +87,29 @@ const SIGNIN = async (req, res) => {
 };
 const GET_ALL = async (req, res) => {
   try {
+    let { page, limit, search } = req.query;
+
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const whereCondition = search
+      ? { user_name: { [Op.like]: `%${search}%` } }
+      : {};
+
+    const totalUsers = await User.count({ where: whereCondition });
+    const users = await User.findAll({
+      where: whereCondition,
+      limit,
+      offset,
+    });
+
     res.status(200).json({
       status: 200,
-      data: await User.findAll(),
+      data: users,
+      totalPages: Math.ceil(totalUsers / limit),
+      currentPage: page,
+      totalUsers,
       message: "Users successfully fetched",
     });
   } catch (error) {
@@ -161,8 +182,8 @@ const UPDATE = async (req, res) => {
         where: { id: req.params.id },
       }
     );
-
-    res.status(200).json({ status: 200, data: user, message: null });
+    const updatedUser = await User.findByPk(req.params.id);
+    res.status(200).json({ status: 200, data: updatedUser, message: null });
   } catch (error) {
     res.status(500).json({
       status: 500,
@@ -173,21 +194,16 @@ const UPDATE = async (req, res) => {
 };
 const DELETE = async (req, res) => {
   try {
-    console.log(req.params);
-    
     const { id } = req.params;
-    const data = await User.findByPk(id);    
+    const data = await User.findByPk(id);
     if (!data) {
       return res.status(404).json({ message: "User not found" });
     }
-    console.log(process.cwd());
-    
-    console.log(`${path.join( "src", data.avatar)}`);
-    
+
     fs.rm(`${path.join(process.cwd(), "src", data.avatar)}`, (err) => {
       if (err) {
         console.log("error", err);
-        
+
         throw err;
       }
       console.log("file deleted successfully");
