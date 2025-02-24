@@ -18,7 +18,13 @@ const POST = async (req, res) => {
     } = req.body;
 
     const image = req.file;
+    const category = await Category.findOne({
+      where: { name_uz, name_ru, name_en },
+    });
 
+    if (category) {
+      return res.status(400).json({ message: "Category already existed" });
+    }
     const newCategory = await Category.create({
       name_uz,
       name_ru,
@@ -42,7 +48,7 @@ const POST = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 500,
-      message: "Error while while fetching category",
+      message: "Error while creating category",
       error: error.message,
     });
   }
@@ -141,6 +147,8 @@ const UPDATE = async (req, res) => {
         where: { id: req.params.id },
       }
     );
+    console.log("category", category);
+
     const updatedCategory = await Category.findByPk(req.params.id);
 
     res.status(200).json({
@@ -151,7 +159,7 @@ const UPDATE = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 500,
-      message: "Error while while fetching category",
+      message: "Error while updating category",
       error: error.message,
     });
   }
