@@ -217,7 +217,7 @@ const DELETE = async (req, res) => {
 
     res
       .status(200)
-      .json({ status: 200, data: user, message: "Successfully deleted" });
+      .json({ status: 200, data: id, message: "Successfully deleted" });
   } catch (error) {
     res.status(500).json({
       status: 500,
