@@ -49,11 +49,25 @@ const POST = async (req, res) => {
 };
 const GET_ALL = async (req, res) => {
   try {
-    const data = await Category.findAll();
+    let { page, limit } = req.query;
+
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const totalCategories = await Category.count();
+    const categories = await Category.findAll({
+      limit,
+      offset,
+    });
+
     res.status(200).json({
       status: 200,
-      data,
-      message: "Category fetched successfully",
+      data: categories,
+      totalPages: Math.ceil(totalCategories / limit),
+      currentPage: page,
+      totalCategories,
+      message: "Categories successfully fetched",
     });
   } catch (error) {
     res.status(500).json({
@@ -127,10 +141,11 @@ const UPDATE = async (req, res) => {
         where: { id: req.params.id },
       }
     );
+    const updatedCategory = await Category.findByPk(req.params.id);
 
     res.status(200).json({
       status: 200,
-      data: category,
+      data: updatedCategory,
       msg: "Category updated successfully!",
     });
   } catch (error) {
@@ -163,7 +178,7 @@ const DELETE = async (req, res) => {
 
     res.status(200).json({
       status: 200,
-      data: category,
+      data: id,
       message: "Category successfully deleted",
     });
   } catch (error) {
