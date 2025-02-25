@@ -21,6 +21,13 @@ const POST = async (req, res) => {
     const image = req.files["image"] ? req.files["image"][0] : null;
 
     const images = req.files["images"] || [];
+    const product = await Product.findOne({
+      where: { name_uz, name_ru, name_en },
+    });
+
+    if (product) {
+      return res.status(400).json({ message: "Product already existed" });
+    }
     if (
       !name_uz ||
       !name_ru ||
@@ -64,13 +71,25 @@ const POST = async (req, res) => {
 };
 const GET_ALL = async (req, res) => {
   try {
-    const data = await Product.findAll({
-      include: [{ model: Image }, { model: Media }],
+    let { page, limit } = req.query;
+
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const totalProducts = await Product.count();
+    const products = await Product.findAll({
+      limit,
+      offset,
     });
+
     res.status(200).json({
       status: 200,
-      data,
-      message: "Data successfully fetched",
+      data: products,
+      totalPages: Math.ceil(totalProducts / limit),
+      currentPage: page,
+      totalProducts,
+      message: "Products successfully fetched",
     });
   } catch (error) {
     res.status(500).json({
@@ -168,9 +187,13 @@ const UPDATE = async (req, res) => {
         product_id: productData.id,
       }))
     );
+    const updatedProduct = await Product.findOne({
+      where: { id: req.params.id },
+      include: [{ model: Image }, { model: Media }],
+    });
     res.status(200).json({
       status: 200,
-      data: product,
+      data: updatedProduct,
       message: "Product updated successfully!",
       err: null,
     });
@@ -216,7 +239,7 @@ const DELETE = async (req, res) => {
 
     res.status(200).json({
       status: 200,
-      data: product,
+      data: id,
       message: "Product successfully deleted",
     });
   } catch (error) {
