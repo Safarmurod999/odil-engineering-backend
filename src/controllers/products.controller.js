@@ -139,10 +139,6 @@ const UPDATE = async (req, res) => {
 
     const image = req.files["image"] ? req.files["image"][0] : null;
     let images = req.files["images"] ?? null;
-    console.log(image);
-
-    console.log(images);
-
     const productData = await Product.findOne({
       where: { id: req.params.id },
     });
