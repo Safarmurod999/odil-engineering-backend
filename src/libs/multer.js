@@ -25,7 +25,9 @@ export const upload = multer({
   fileFilter: function (req, file, cb) {
     const mimetype =
       file.mimetype.split("/")[1] == "png" ||
-      file.mimetype.split("/")[1] == "svg"
+      file.mimetype.split("/")[1] == "svg" ||
+      file.mimetype.split("/")[1] == "jpeg" ||
+      file.mimetype.split("/")[1] == "jpg"
         ? true
         : false;
 

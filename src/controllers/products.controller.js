@@ -134,6 +134,7 @@ const UPDATE = async (req, res) => {
       category_id,
       media,
       is_active,
+      delete_images_array,
     } = req.body;
 
     const image = req.files["image"] ? req.files["image"][0] : null;
@@ -175,8 +176,8 @@ const UPDATE = async (req, res) => {
       }
     );
 
-    if (image && productData.image) {
-      fs.rm(`${path.join(process.cwd(), "src", productData.image)}`, (err) => {
+    if (image && productData?.image) {
+      fs.rm(`${path.join(process.cwd(), "src", productData?.image)}`, (err) => {
         if (err) {
           console.log(err);
           throw err;
@@ -184,6 +185,26 @@ const UPDATE = async (req, res) => {
         console.log("Old file deleted successfully");
       });
     }
+    if (delete_images_array) {
+      const imagesToDelete = await Image.findAll({
+        where: {
+          id: delete_images_array,
+        },
+      });
+      imagesToDelete.forEach((img) => {
+        fs.rm(`${path.join(process.cwd(), "src", img.src)}`, (err) => {
+          if (err) {
+            throw err;
+          }
+        });
+      });
+      const deletedImages = await Image.destroy({
+        where: {
+          id: delete_images_array,
+        },
+      });
+    }
+
     if (images) {
       const imageData = await Image.bulkCreate(
         images.map((img) => ({
