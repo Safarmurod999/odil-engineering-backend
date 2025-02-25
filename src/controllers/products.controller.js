@@ -137,7 +137,10 @@ const UPDATE = async (req, res) => {
     } = req.body;
 
     const image = req.files["image"] ? req.files["image"][0] : null;
-    let images = req.files["images"] || null;
+    let images = req.files["images"] ?? null;
+    console.log(image);
+
+    console.log(images);
 
     const productData = await Product.findOne({
       where: { id: req.params.id },
@@ -149,7 +152,7 @@ const UPDATE = async (req, res) => {
     if (!Array.isArray(mediaData)) {
       mediaData = [mediaData];
     }
-    if (!Array.isArray(images)) {
+    if (images && !Array.isArray(images)) {
       images = [images];
     }
 
@@ -162,7 +165,7 @@ const UPDATE = async (req, res) => {
         description_ru: description_ru ?? productData.description_ru,
         description_en: description_en ?? productData.description_en,
         image: image
-          ? `${path.join("uploads", "products", image.filename)}`
+          ? `${path.join("uploads", "products", image?.filename)}`
           : productData.image,
         category_id: category_id ?? productData.category_id,
         is_active: is_active ?? productData.is_active,
@@ -181,12 +184,14 @@ const UPDATE = async (req, res) => {
         console.log("Old file deleted successfully");
       });
     }
-    const imageData = await Image.bulkCreate(
-      images.map((img) => ({
-        src: `${path.join("uploads", "products", img.filename)}`,
-        product_id: productData.id,
-      }))
-    );
+    if (images) {
+      const imageData = await Image.bulkCreate(
+        images.map((img) => ({
+          src: `${path.join("uploads", "products", img?.filename)}`,
+          product_id: productData.id,
+        }))
+      );
+    }
     const updatedProduct = await Product.findOne({
       where: { id: req.params.id },
       include: [{ model: Image }, { model: Media }],
