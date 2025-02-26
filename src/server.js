@@ -11,6 +11,7 @@ import { clientsRouter } from "./routes/clients.routes.js";
 import { mediaRouter } from "./routes/media.routes.js";
 import { leadsRouter } from "./routes/leads.routes.js";
 import { testimonialsRouter } from "./routes/testimonials.routes.js";
+import { projectRouter } from "./routes/projects.routes.js";
 
 configDotenv();
 
@@ -35,6 +36,7 @@ configDotenv();
   app.use(checkToken, mediaRouter);
   app.use(checkToken, leadsRouter);
   app.use(checkToken, testimonialsRouter);
+  app.use(checkToken, projectRouter);
 
   app.all("/*", (req, res) => {
     res.send("404 not found");
