@@ -60,7 +60,22 @@ const GET_ALL = async (req, res) => {
     });
   }
 };
-
+const GET = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const leadData = await Lead.findByPk(id);
+    if (!leadData) {
+      return res.status(404).json({ message: "Lead not found" });
+    }
+    res.status(200).json({ status: 200, data: leadData, message: null });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: "Error while fetching lead by id",
+      error: error.message,
+    });
+  }
+};
 const DELETE = async (req, res) => {
   try {
     const { id } = req.params;
@@ -84,4 +99,4 @@ const DELETE = async (req, res) => {
   }
 };
 
-export default { POST, GET_ALL, DELETE };
+export default { POST, GET_ALL, DELETE, GET };
