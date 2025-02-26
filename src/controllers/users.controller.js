@@ -13,9 +13,9 @@ const POST = async (req, res) => {
       first_name,
       last_name,
       email,
-      description_uz,
-      description_ru,
-      description_en,
+      // description_uz,
+      // description_ru,
+      // description_en,
       password,
     } = req.body;
     const user = await User.findOne({ where: { user_name } });
@@ -28,10 +28,10 @@ const POST = async (req, res) => {
       !first_name ||
       !last_name ||
       !email ||
-      !password ||
-      !description_uz ||
-      !description_ru ||
-      !description_en
+      !password
+      // !description_uz ||
+      // !description_ru ||
+      // !description_en
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }

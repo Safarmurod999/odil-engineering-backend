@@ -12,14 +12,14 @@ export const checkUser = async (req, res, next) => {
     });
 
     if (!user) {
-      res.json({ status: 404, error: "Invalid Credentials" });
+      res.status(404).json({ status: 404, error: "Invalid Credentials" });
       return;
     }
 
     const passwordCompare = user.password === password;
 
     if (!passwordCompare) {
-      res.json({ status: 401, error: "Invalid Credentials" });
+      res.status(401).json({ status: 401, error: "Invalid Credentials" });
       return;
     }
     return next();
