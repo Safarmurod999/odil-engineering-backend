@@ -13,9 +13,9 @@ const POST = async (req, res) => {
       first_name,
       last_name,
       email,
-      // description_uz,
-      // description_ru,
-      // description_en,
+      description_uz,
+      description_ru,
+      description_en,
       password,
     } = req.body;
     const user = await User.findOne({ where: { user_name } });
@@ -44,9 +44,9 @@ const POST = async (req, res) => {
       email: email,
       first_name,
       last_name,
-      description_uz,
-      description_ru,
-      description_en,
+      // description_uz,
+      // description_ru,
+      // description_en,
       avatar:
         avatar == ""
           ? ""
@@ -173,9 +173,9 @@ const UPDATE = async (req, res) => {
       first_name,
       last_name,
       email,
-      description_uz,
-      description_ru,
-      description_en,
+      // description_uz,
+      // description_ru,
+      // description_en,
       password,
       is_active,
     } = req.body;
@@ -200,9 +200,9 @@ const UPDATE = async (req, res) => {
         email: email ?? userData.email,
         first_name: first_name ?? userData.first_name,
         last_name: last_name ?? userData.last_name,
-        description_uz: description_uz ?? userData.description_uz,
-        description_ru: description_ru ?? userData.description_ru,
-        description_en: description_en ?? userData.description_en,
+        // description_uz: description_uz ?? userData.description_uz,
+        // description_ru: description_ru ?? userData.description_ru,
+        // description_en: description_en ?? userData.description_en,
         avatar: avatar
           ? `${path.join("uploads", "users", avatar.filename)}`
           : userData.avatar,
