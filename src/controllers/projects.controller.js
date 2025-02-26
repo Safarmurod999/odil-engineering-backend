@@ -58,7 +58,8 @@ const GET_ALL = async (req, res) => {
     page = parseInt(page) || 1;
     limit = parseInt(limit) || 10;
     const offset = (page - 1) * limit;
-
+    console.log("running");
+    
     const totalProjects = await Project.count();
     const projects = await Project.findAll({
       limit,
