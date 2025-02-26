@@ -6,9 +6,10 @@ import { upload } from "../libs/multer.js";
 
 export const usersRouter = Router();
 
-usersRouter.post("/signup", upload.single("avatar"), CB.POST);
+usersRouter.post("/signup", CB.SIGNUP);
 usersRouter.post("/signin", checkUser, CB.SIGNIN);
 
+usersRouter.post("/users", upload.single("avatar"), CB.POST);
 usersRouter.get("/users", CB.GET_ALL);
 usersRouter.get("/users/:id", CB.GET);
 usersRouter.put("/users/:id", upload.single("avatar"), CB.UPDATE);

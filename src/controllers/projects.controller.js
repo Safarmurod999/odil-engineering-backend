@@ -59,7 +59,7 @@ const GET_ALL = async (req, res) => {
     limit = parseInt(limit) || 10;
     const offset = (page - 1) * limit;
     console.log("running");
-    
+
     const totalProjects = await Project.count();
     const projects = await Project.findAll({
       limit,
@@ -106,8 +106,16 @@ const GET = async (req, res) => {
 };
 const UPDATE = async (req, res) => {
   try {
-    const { title_uz, title_ru, title_en, link, description_uz, is_active } =
-      req.body;
+    const {
+      title_uz,
+      title_ru,
+      title_en,
+      link,
+      description_uz,
+      description_ru,
+      description_en,
+      is_active,
+    } = req.body;
     const data = await Project.findByPk(req.params.id);
     if (!data) {
       res.status(404).json({
@@ -121,6 +129,8 @@ const UPDATE = async (req, res) => {
         title_en: title_en ?? data.title_en,
         link: link ?? data.link,
         description_uz: description_uz ?? data.description_uz,
+        description_ru: description_ru ?? data.description_ru,
+        description_en: description_en ?? data.description_en,
         is_active: is_active ?? data.is_active,
       },
       {

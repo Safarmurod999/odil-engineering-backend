@@ -3,7 +3,6 @@ import fs from "fs";
 import { configDotenv } from "dotenv";
 import { jwtHelper } from "../utils/helper.js";
 import path from "path";
-import { Op } from "sequelize";
 
 configDotenv();
 
@@ -49,14 +48,50 @@ const POST = async (req, res) => {
       description_ru,
       description_en,
       avatar:
-        avatar == "" ? "" : `${path.join("uploads", "users", avatar.filename)}`,
+        avatar == ""
+          ? ""
+          : `${path.join("uploads", "users", avatar?.filename)}`,
+      is_active: true,
+    });
+
+    res.status(201).json({
+      status: 201,
+      data: newUser,
+      message: "Successfully signed up.",
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: "Error while creating user",
+      error: error.message,
+    });
+  }
+};
+const SIGNUP = async (req, res) => {
+  try {
+    const { user_name, first_name, last_name, password } = req.body;
+    const user = await User.findOne({ where: { user_name } });
+
+    if (user) {
+      return res.status(400).json({ message: "User already signed up" });
+    }
+    if (!user_name || !first_name || !last_name || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    const token = jwtHelper.sign({ user_name }, process.env.SECRET_KEY);
+
+    const newUser = await User.create({
+      user_name,
+      password: password,
+      first_name,
+      last_name,
       is_active: true,
     });
 
     res.status(201).json({
       status: 201,
       data: token,
-      message: "Successfully signed up.",
+      message: "User successfully crated.",
     });
   } catch (error) {
     res.status(500).json({
@@ -87,7 +122,7 @@ const SIGNIN = async (req, res) => {
 };
 const GET_ALL = async (req, res) => {
   try {
-    let { page, limit} = req.query;
+    let { page, limit } = req.query;
 
     page = parseInt(page) || 1;
     limit = parseInt(limit) || 10;
@@ -229,4 +264,5 @@ export default {
   UPDATE,
   DELETE,
   SIGNIN,
+  SIGNUP,
 };

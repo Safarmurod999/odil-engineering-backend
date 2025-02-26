@@ -42,22 +42,22 @@ export async function USER_MODEL({ sequelize }) {
       },
       email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: true,
       },
       description_uz: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
         unique: false,
       },
       description_en: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
         unique: false,
       },
       description_ru: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
         unique: false,
       },
       avatar: {
