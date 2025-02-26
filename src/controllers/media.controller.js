@@ -35,11 +35,25 @@ const POST = async (req, res) => {
 };
 const GET_ALL = async (req, res) => {
   try {
-    const data = await Media.findAll();
+    let { page, limit } = req.query;
+
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const totalMedia = await Media.count();
+    const media = await Media.findAll({
+      limit,
+      offset,
+    });
+
     res.status(200).json({
       status: 200,
-      data,
-      message: "Medias successfully fetched",
+      data: media,
+      totalPages: Math.ceil(totalMedia / limit),
+      currentPage: page,
+      totalMedia,
+      message: "Media successfully fetched",
     });
   } catch (error) {
     res.status(500).json({
@@ -94,10 +108,10 @@ const UPDATE = async (req, res) => {
         where: { id: req.params.id },
       }
     );
-
+    const updatedMedia = await Media.findByPk(req.params.id);
     res.status(200).json({
       status: 200,
-      data: media,
+      data: updatedMedia,
       message: "Media updated successfully!",
     });
   } catch (error) {
@@ -123,7 +137,11 @@ const DELETE = async (req, res) => {
       },
     });
 
-    res.status(200).json({ status: 200, data: media, message: "Media successfully deleted" });
+    res.status(200).json({
+      status: 200,
+      data: req.params.id,
+      message: "Media successfully deleted",
+    });
   } catch (error) {
     res.status(500).json({
       status: 500,

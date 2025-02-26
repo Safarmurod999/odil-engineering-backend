@@ -163,7 +163,7 @@ const UPDATE = async (req, res) => {
         description_en: description_en ?? productData.description_en,
         image: image
           ? `${path.join("uploads", "products", image?.filename)}`
-          : productData.image,
+          : productData?.image,
         category_id: category_id ?? productData.category_id,
         is_active: is_active ?? productData.is_active,
       },
