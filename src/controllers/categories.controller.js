@@ -36,7 +36,7 @@ const POST = async (req, res) => {
       image:
         image == ""
           ? ""
-          : `${path.join("uploads", "categories", image.filename)}`,
+          : `${path.join("uploads", "categories", image?.filename)}`,
       is_active: true,
     });
 
@@ -121,7 +121,7 @@ const UPDATE = async (req, res) => {
       return res.status(404).json({ message: "Category not found" });
     }
     if (image) {
-      fs.rm(`${path.join(process.cwd(), "src", categoryData.image)}`, (err) => {
+      fs.rm(`${path.join(process.cwd(), "src", categoryData?.image)}`, (err) => {
         if (err) {
           throw err;
         }
@@ -139,16 +139,14 @@ const UPDATE = async (req, res) => {
         description_ru: description_ru ?? categoryData.description_ru,
         description_en: description_en ?? categoryData.description_en,
         image: image
-          ? `${path.join("uploads", "categories", image.filename)}`
-          : categoryData.image,
+          ? `${path.join("uploads", "categories", image?.filename)}`
+          : categoryData?.image,
         is_active: is_active ?? categoryData.is_active,
       },
       {
         where: { id: req.params.id },
       }
     );
-    console.log("category", category);
-
     const updatedCategory = await Category.findByPk(req.params.id);
 
     res.status(200).json({

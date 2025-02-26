@@ -53,11 +53,25 @@ const POST = async (req, res) => {
 };
 const GET_ALL = async (req, res) => {
   try {
-    const data = await Project.findAll();
+    let { page, limit } = req.query;
+
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const totalProjects = await Project.count();
+    const projects = await Project.findAll({
+      limit,
+      offset,
+    });
+
     res.status(200).json({
       status: 200,
-      data,
-      message: "Projects fetched successfully",
+      data: projects,
+      totalPages: Math.ceil(totalProjects / limit),
+      currentPage: page,
+      totalProjects,
+      message: "Projects successfully fetched",
     });
   } catch (error) {
     res.status(500).json({
@@ -112,10 +126,10 @@ const UPDATE = async (req, res) => {
         where: { id: req.params.id },
       }
     );
-
+    const updatedProject = await Project.findByPk(req.params.id);
     res.status(200).json({
       status: 200,
-      data: project,
+      data: updatedProject,
       message: "Project updated successfully!",
     });
   } catch (error) {
@@ -141,13 +155,11 @@ const DELETE = async (req, res) => {
       },
     });
 
-    res
-      .status(200)
-      .json({
-        status: 200,
-        data: data,
-        message: "Project deleted successfully",
-      });
+    res.status(200).json({
+      status: 200,
+      data: data,
+      message: "Project deleted successfully",
+    });
   } catch (error) {
     res.status(500).json({
       status: 500,

@@ -22,23 +22,35 @@ const POST = async (req, res) => {
       message: "Lead created successfully",
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        status: 500,
-        message: "Error while creating lead",
-        error: error.message,
-      });
+    return res.status(500).json({
+      status: 500,
+      message: "Error while creating lead",
+      error: error.message,
+    });
   }
 };
 
 const GET_ALL = async (req, res) => {
   try {
-    const leads = await Lead.findAll();
+    let { page, limit } = req.query;
+
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const totalLeads = await Lead.count();
+    const leads = await Lead.findAll({
+      limit,
+      offset,
+    });
+
     res.status(200).json({
       status: 200,
       data: leads,
-      message: "Leads fetched successfully",
+      totalPages: Math.ceil(totalLeads / limit),
+      currentPage: page,
+      totalLeads,
+      message: "Leads successfully fetched",
     });
   } catch (error) {
     res.status(500).json({
@@ -60,7 +72,7 @@ const DELETE = async (req, res) => {
     const data = await lead.destroy();
     res.status(201).json({
       status: 201,
-      data,
+      data: req.params.id,
       message: "Lead created successfully",
     });
   } catch (error) {

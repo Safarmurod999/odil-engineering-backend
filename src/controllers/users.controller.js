@@ -87,19 +87,14 @@ const SIGNIN = async (req, res) => {
 };
 const GET_ALL = async (req, res) => {
   try {
-    let { page, limit, search } = req.query;
+    let { page, limit} = req.query;
 
     page = parseInt(page) || 1;
     limit = parseInt(limit) || 10;
     const offset = (page - 1) * limit;
 
-    const whereCondition = search
-      ? { user_name: { [Op.like]: `%${search}%` } }
-      : {};
-
-    const totalUsers = await User.count({ where: whereCondition });
+    const totalUsers = await User.count();
     const users = await User.findAll({
-      where: whereCondition,
       limit,
       offset,
     });

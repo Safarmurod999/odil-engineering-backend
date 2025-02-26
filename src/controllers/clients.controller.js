@@ -16,7 +16,7 @@ const POST = async (req, res) => {
       image:
         image == ""
           ? ""
-          : `${path.join("src", "uploads", "clients", image.filename)}`,
+          : `${path.join("src", "uploads", "clients", image?.filename)}`,
       is_active: true,
     });
 
@@ -35,11 +35,25 @@ const POST = async (req, res) => {
 };
 const GET = async (req, res) => {
   try {
-    const data = await Client.findAll();
+    let { page, limit } = req.query;
+
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const totalClients = await Client.count();
+    const clients = await Client.findAll({
+      limit,
+      offset,
+    });
+
     res.status(200).json({
       status: 200,
-      data,
-      message: "Clients fetched successfully",
+      data: clients,
+      totalPages: Math.ceil(totalClients / limit),
+      currentPage: page,
+      totalClients,
+      message: "Clients successfully fetched",
     });
   } catch (error) {
     res.status(500).json({
@@ -75,10 +89,10 @@ const UPDATE = async (req, res) => {
         where: { id: req.params.id },
       }
     );
-
+    const updatedClient = await Client.findByPk(req.params.id);
     res.status(200).json({
       status: 200,
-      data: client,
+      data: updatedClient,
       msg: "Client updated successfully!",
     });
   } catch (error) {
@@ -109,7 +123,7 @@ const DELETE = async (req, res) => {
 
     res.status(200).json({
       status: 200,
-      data: client,
+      data: id,
       message: "Client successfully deleted",
     });
   } catch (error) {
