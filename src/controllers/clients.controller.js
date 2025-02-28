@@ -162,4 +162,5 @@ export default {
   GET_ALL,
   UPDATE,
   DELETE,
+  GET
 };
