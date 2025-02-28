@@ -16,7 +16,7 @@ const POST = async (req, res) => {
       image:
         image == ""
           ? ""
-          : `${path.join("src", "uploads", "clients", image?.filename)}`,
+          : `${path.join("uploads", "clients", image?.filename)}`,
       is_active: true,
     });
 
@@ -103,7 +103,7 @@ const UPDATE = async (req, res) => {
       {
         name: name ?? clientData.name,
         image: image
-          ? `${path.join("src", "uploads", "clients", image.filename)}`
+          ? `${path.join("uploads", "clients", image.filename)}`
           : clientData.image,
         is_active: is_active ?? clientData.is_active,
       },
@@ -162,5 +162,5 @@ export default {
   GET_ALL,
   UPDATE,
   DELETE,
-  GET
+  GET,
 };
