@@ -33,7 +33,7 @@ const POST = async (req, res) => {
     });
   }
 };
-const GET = async (req, res) => {
+const GET_ALL = async (req, res) => {
   try {
     let { page, limit } = req.query;
 
@@ -59,6 +59,28 @@ const GET = async (req, res) => {
     res.status(500).json({
       status: 500,
       message: "Error while while fetching clients",
+      error: error.message,
+    });
+  }
+};
+const GET = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await Client.findByPk(id);
+    if (!data) {
+      res.status(404).json({
+        message: "Client not found!",
+      });
+    }
+    res.status(200).json({
+      status: 200,
+      data,
+      message: null,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: "Error while while fetching client",
       error: error.message,
     });
   }
@@ -137,7 +159,7 @@ const DELETE = async (req, res) => {
 
 export default {
   POST,
-  GET,
+  GET_ALL,
   UPDATE,
   DELETE,
 };
