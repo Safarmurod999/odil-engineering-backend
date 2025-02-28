@@ -85,10 +85,10 @@ const DELETE = async (req, res) => {
     }
 
     const data = await lead.destroy();
-    res.status(201).json({
+    res.status(200).json({
       status: 201,
       data: req.params.id,
-      message: "Lead created successfully",
+      message: "Lead deleted successfully",
     });
   } catch (error) {
     res.status(500).json({
