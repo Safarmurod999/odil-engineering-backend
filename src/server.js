@@ -3,7 +3,6 @@ import cors from "cors";
 import { configDotenv } from "dotenv";
 
 import database from "./utils/config.js";
-import { checkToken } from "./middlewares/users.middleware.js";
 import { usersRouter } from "./routes/users.routes.js";
 import { categoriesRouter } from "./routes/categories.routes.js";
 import { productsRouter } from "./routes/products.routes.js";
@@ -30,13 +29,13 @@ configDotenv();
   app.use(express.urlencoded({ extended: true }));
   app.use("/uploads", express.static("src/uploads"));
   app.use(usersRouter);
-  app.use(checkToken, clientsRouter);
-  app.use(checkToken, categoriesRouter);
-  app.use(checkToken, productsRouter);
-  app.use(checkToken, mediaRouter);
-  app.use(checkToken, leadsRouter);
-  app.use(checkToken, testimonialsRouter);
-  app.use(checkToken, projectRouter);
+  app.use(clientsRouter);
+  app.use(categoriesRouter);
+  app.use(productsRouter);
+  app.use(mediaRouter);
+  app.use(leadsRouter);
+  app.use(testimonialsRouter);
+  app.use(projectRouter);
 
   app.all("/*", (req, res) => {
     res.send("404 not found");
