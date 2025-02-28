@@ -68,6 +68,29 @@ const GET_ALL = async (req, res) => {
   }
 };
 
+const GET = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await Testimonial.findByPk(id);
+    if (!data) {
+      res.status(404).json({
+        message: "Testimonial not found!",
+      });
+    }
+    res.status(200).json({
+      status: 200,
+      data,
+      message: null,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: "Error while fetching testimonials",
+      error: error.message,
+    });
+  }
+};
+
 const UPDATE = async (req, res) => {
   try {
     const { id } = req.params;
@@ -134,4 +157,4 @@ const DELETE = async (req, res) => {
   }
 };
 
-export default { POST, GET_ALL, UPDATE, DELETE };
+export default { POST, GET_ALL, GET, UPDATE, DELETE };
