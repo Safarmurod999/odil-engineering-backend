@@ -137,8 +137,10 @@ const UPDATE = async (req, res) => {
       delete_images_array,
     } = req.body;
 
-    const image = req.files["image"] ? req.files["image"][0] : null;
-    let images = req.files["images"] ?? null;
+    const image =
+      req.files && req?.files["image"] ? req?.files["image"][0] : null;
+    let images =
+      req.files && req?.files["images"] ? req?.files["images"] : null;
     const productData = await Product.findOne({
       where: { id: req.params.id },
     });
