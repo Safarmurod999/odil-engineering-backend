@@ -47,7 +47,7 @@ export async function PRODUCT_MODEL({ sequelize }) {
         allowNull: false,
         validate: {
           len: {
-            args: [2, 300],
+            args: [2, 1000],
             msg: "Product description length should be between 2 and 300",
           },
         },
@@ -57,7 +57,7 @@ export async function PRODUCT_MODEL({ sequelize }) {
         allowNull: false,
         validate: {
           len: {
-            args: [2, 300],
+            args: [2, 1000],
             msg: "Product description length should be between 2 and 300",
           },
         },
@@ -67,7 +67,7 @@ export async function PRODUCT_MODEL({ sequelize }) {
         allowNull: false,
         validate: {
           len: {
-            args: [2, 300],
+            args: [2, 1000],
             msg: "Product description length should be between 2 and 300",
           },
         },

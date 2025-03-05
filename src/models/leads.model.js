@@ -48,7 +48,7 @@ export async function LEADS_MODEL({ sequelize }) {
         unique: false,
         validate: {
           len: {
-            args: [2, 100],
+            args: [2, 500],
             msg: "Lead message length should be between 2 and 100",
           },
         },

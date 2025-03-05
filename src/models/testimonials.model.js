@@ -15,7 +15,7 @@ export async function TESTIMONIALS_MODEL({ sequelize }) {
         unique: false,
         validate: {
           len: {
-            args: [2, 100],
+            args: [2, 400],
             msg: "Testimonial name length should be between 2 and 100",
           },
         },
@@ -26,7 +26,7 @@ export async function TESTIMONIALS_MODEL({ sequelize }) {
         unique: false,
         validate: {
           len: {
-            args: [2, 100],
+            args: [2, 400],
             msg: "Testimonial name length should be between 2 and 100",
           },
         },
@@ -37,7 +37,7 @@ export async function TESTIMONIALS_MODEL({ sequelize }) {
         unique: false,
         validate: {
           len: {
-            args: [2, 100],
+            args: [2, 400],
             msg: "Testimonial name length should be between 2 and 100",
           },
         },
@@ -48,7 +48,7 @@ export async function TESTIMONIALS_MODEL({ sequelize }) {
         unique: false,
         validate: {
           len: {
-            args: [2, 100],
+            args: [2, 400],
             msg: "Testimonial message length should be between 2 and 100",
           },
         },
@@ -59,7 +59,7 @@ export async function TESTIMONIALS_MODEL({ sequelize }) {
         unique: false,
         validate: {
           len: {
-            args: [2, 100],
+            args: [2, 400],
             msg: "Testimonial message length should be between 2 and 100",
           },
         },
@@ -70,7 +70,7 @@ export async function TESTIMONIALS_MODEL({ sequelize }) {
         unique: false,
         validate: {
           len: {
-            args: [2, 100],
+            args: [2, 400],
             msg: "Testimonial message length should be between 2 and 100",
           },
         },
