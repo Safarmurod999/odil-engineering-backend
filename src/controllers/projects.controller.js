@@ -167,7 +167,7 @@ const DELETE = async (req, res) => {
 
     res.status(200).json({
       status: 200,
-      data: data,
+      data: id,
       message: "Project deleted successfully",
     });
   } catch (error) {

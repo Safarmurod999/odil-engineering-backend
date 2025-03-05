@@ -91,7 +91,7 @@ const UPDATE = async (req, res) => {
     const image = req.file;
     const clientData = await Client.findByPk(req.params.id);
     if (image) {
-      fs.rm(`${path.join(process.cwd(), clientData.image)}`, (err) => {
+      fs.rm(`${path.join(process.cwd(), "src", clientData.image)}`, (err) => {
         if (err) {
           throw err;
         }
@@ -130,7 +130,7 @@ const DELETE = async (req, res) => {
     const { id } = req.params;
     const data = await Client.findByPk(id);
 
-    fs.rm(`${path.join(process.cwd(), data.image)}`, (err) => {
+    fs.rm(`${path.join(process.cwd(), "src", data?.image)}`, (err) => {
       if (err) {
         throw err;
       }
