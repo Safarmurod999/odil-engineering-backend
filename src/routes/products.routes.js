@@ -34,6 +34,7 @@ productsRouter.put(
     {
       name: "images",
       maxCount: 8,
+      
     },
   ]),
   CB.UPDATE

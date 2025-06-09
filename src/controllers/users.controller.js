@@ -47,6 +47,7 @@ const POST = async (req, res) => {
 const SIGNUP = async (req, res) => {
   try {
     const { user_name, first_name, last_name, password } = req.body;
+
     const user = await User.findOne({ where: { user_name } });
 
     if (user) {
@@ -145,14 +146,8 @@ const GET = async (req, res) => {
 };
 const UPDATE = async (req, res) => {
   try {
-    const {
-      user_name,
-      first_name,
-      last_name,
-      email,
-      password,
-      is_active,
-    } = req.body;
+    const { user_name, first_name, last_name, email, password, is_active } =
+      req.body;
     const avatar = req.file;
     const userData = await User.findByPk(req.params.id);
     if (!userData) {

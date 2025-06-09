@@ -11,6 +11,7 @@ import { mediaRouter } from "./routes/media.routes.js";
 import { leadsRouter } from "./routes/leads.routes.js";
 import { testimonialsRouter } from "./routes/testimonials.routes.js";
 import { projectRouter } from "./routes/projects.routes.js";
+import { suppliersRouter } from "./routes/suppliers.routes.js";
 
 configDotenv();
 
@@ -28,6 +29,7 @@ configDotenv();
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use("/uploads", express.static("src/uploads"));
+  
   app.use(usersRouter);
   app.use(clientsRouter);
   app.use(categoriesRouter);
@@ -36,6 +38,7 @@ configDotenv();
   app.use(leadsRouter);
   app.use(testimonialsRouter);
   app.use(projectRouter);
+  app.use(suppliersRouter);
 
   app.all("/*", (req, res) => {
     res.send("404 not found");
