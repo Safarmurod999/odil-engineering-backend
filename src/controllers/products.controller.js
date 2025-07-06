@@ -73,11 +73,12 @@ const GET_ALL = async (req, res) => {
   try {
     let { page, limit } = req.query;
 
+    const totalProducts = await Product.count();
+
     page = parseInt(page) || 1;
-    limit = parseInt(limit) || 10;
+    limit = parseInt(limit) || totalProducts;
     const offset = (page - 1) * limit;
 
-    const totalProducts = await Product.count();
     const products = await Product.findAll({
       limit,
       offset,

@@ -22,7 +22,7 @@ export async function SUPPLIERS_MODEL({ sequelize }) {
       },
       partner_count: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         unique: false,
       },
       inn: {
@@ -48,7 +48,7 @@ export async function SUPPLIERS_MODEL({ sequelize }) {
       },
       phone: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: false,
         validate: {
           len: {
@@ -59,7 +59,7 @@ export async function SUPPLIERS_MODEL({ sequelize }) {
       },
       company_description: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: false,
         validate: {
           len: {
